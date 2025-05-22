@@ -11,6 +11,8 @@ from fetchers import get_tc_feed, get_hn_top
 from filters import passes
 from summarizer import summarize
 from mailer import send
+from tg_bot import send_tg
+import asyncio
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +24,10 @@ def run():
     logging.info("→ Fetching sources")
     articles = list(get_tc_feed()) + list(get_hn_top())
     logging.info(f"  fetched {len(articles)} total")
+
+    # log the top-5 headlines
+    for idx, art in enumerate(articles[:5], start=1):
+        logging.info(f"    {idx}. {art['title']}")
 
     logging.info("→ Filtering by keywords")
     picks = [a for a in articles if passes(a)]
@@ -40,8 +46,10 @@ def run():
         )
 
     markdown = "\n".join(digest_lines) or "No matching articles today."
-    logging.info("→ Sending email")
-    send(markdown)
+    #logging.info("→ Sending email")
+    #send(markdown)
+    logging.info("→ Sending a message in Tg")
+    asyncio.run(send_tg(picks))
     logging.info("✓ Done")
 
 
