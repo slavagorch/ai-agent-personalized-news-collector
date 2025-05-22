@@ -2,6 +2,7 @@
 name: “Daily AI Digest”
 
 on:
+  workflow_dispatch:
   schedule:
     # Runs at 06:30 UTC (07:30 CET) every day
     - cron: '* * * * *'
