@@ -1,26 +1,26 @@
 # .github/workflows/daily_digest.yml
-name: “Daily AI Digest”
+name: Daily AI Digest
 
 on:
   workflow_dispatch:
   schedule:
-    # Runs at 06:30 UTC (07:30 CET) every day
-    - cron: '* * * * *'
+    - cron: '30 06 * * *'   # 07:30 CET
 
 jobs:
   send-digest:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.11               # ← pin 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
 
       - name: Run pipeline
