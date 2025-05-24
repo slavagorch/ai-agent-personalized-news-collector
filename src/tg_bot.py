@@ -3,6 +3,7 @@
 import os, csv, logging
 from dotenv import load_dotenv
 from telegram import Bot  # synchronous client
+from html import escape
 
 # ─── Config & Logging ───────────────────────────────────────
 load_dotenv()
@@ -49,11 +50,19 @@ async def send_tg(picks):
     """
     logging.info(f"▶︎ Sending {len(picks)} articles via Telegram")
     for art in picks:
-        text = f"*{art['title']}*\n{art['summary']}\n{art['url']}"
-        # await the coroutine
+        safe_title = escape(art["title"])
+        safe_summary = escape(art["summary"])
+        url = art["url"]
+
+        html_msg = (
+            f"<b>{safe_title}</b>\n"
+            f"{safe_summary}\n"
+            f"<a href=\"{url}\">Read more</a>"
+        )
+
         await bot.send_message(
             chat_id=CHAT_ID,
-            text=text,
-            parse_mode="Markdown"
+            text=html_msg,
+            parse_mode="HTML"
         )
     logging.info("✓ Digest sent")
