@@ -5,7 +5,7 @@ import datetime as dt
 TECHCRUNCH_RSS = "https://techcrunch.com/tag/ai/feed/"
 HN_API_PREFIX = "https://hacker-news.firebaseio.com/v0"
 
-def get_tc_feed(limit: int = 50):
+def get_tc_feed(limit: int = 100):
     """
     Yield up to `limit` AI-tagged TechCrunch articles.
     If limit is None, yields all entries.
@@ -21,7 +21,7 @@ def get_tc_feed(limit: int = 50):
             "desc":      getattr(e, "summary", ""),
         }
 
-def get_hn_top(limit: int = 50):
+def get_hn_top(limit: int = 100):
     """
     Yield up to `limit` top HN stories that have URLs.
     """

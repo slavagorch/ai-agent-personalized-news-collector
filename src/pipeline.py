@@ -4,13 +4,12 @@ Merge everything together:
 2. Filter via regex.
 3. Keep 5 freshest.
 4. Summarize each.
-5. Email the digest.
+5. Send via Telegram.
 """
 import logging
 from fetchers import get_tc_feed, get_hn_top
 from filters import passes
 from summarizer import summarize
-from mailer import send
 from tg_bot import send_tg
 import asyncio
 
@@ -34,24 +33,16 @@ def run():
     logging.info(f"  kept {len(picks)} matches")
 
     picks.sort(key=lambda x: x["published"], reverse=True)
-    picks = picks[:5]
+    picks = picks[:4]
     logging.info(f"→ Taking top {len(picks)} for summary")
 
-    digest_lines = []
     for art in picks:
         logging.info(f"   summarising: {art['title'][:60]}…")
         art["summary"] = summarize(art)
-        digest_lines.append(
-            f"• [{art['title']}]({art['url']}) — {art['summary']}"
-        )
 
-    markdown = "\n".join(digest_lines) or "No matching articles today."
-    #logging.info("→ Sending email")
-    #send(markdown)
     logging.info("→ Sending a message in Tg")
     asyncio.run(send_tg(picks))
     logging.info("✓ Done")
-
 
 if __name__ == "__main__":
     run()
