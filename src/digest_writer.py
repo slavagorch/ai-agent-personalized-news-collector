@@ -8,4 +8,6 @@ def write_digest(picks, out_path: str):
         lines.append(f"{art['summary']}\n")
         lines.append(f"[Read more]({art['url']})  \n— {art['source']}, "
                      f"{art['published']:%d %b %Y}\n")
-    Path(out_path).write_text("\n".join(lines), encoding="utf-8")
+    p = Path(out_path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("\n".join(lines), encoding="utf-8")
