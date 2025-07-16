@@ -12,7 +12,8 @@ from filters import passes
 from summarizer import summarize
 from tg_bot import send_tg
 import asyncio
-
+import datetime as dt
+from digest_writer import write_digest
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -39,6 +40,9 @@ def run():
     for art in picks:
         logging.info(f"   summarising: {art['title'][:60]}…")
         art["summary"] = summarize(art)
+
+    today = dt.date.today().isoformat()
+    write_digest(picks, f"digests/{today}.md")
 
     logging.info("→ Sending a message in Tg")
     asyncio.run(send_tg(picks))
